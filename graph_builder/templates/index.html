@@ -1,0 +1,530 @@
+<!DOCTYPE HTML>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>DataNow - Visualização e Análise de Dados Simplificadas</title>
+    <link rel="icon" href="{{ url_for('static', filename='shared_assets/shared_images/favicon.ico') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!-- Estilos Inline -->
+    <style>
+        /* Estilos CSS */
+        body {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: #ffffff;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Cabeçalho */
+        #header {
+            background: rgba(0, 0, 0, 0.7);
+            position: relative;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Logo */
+        #logo {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            height: 50px;
+        }
+
+        #logo img {
+            height: 100%;
+        }
+
+        /* Navegação */
+        #nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #nav ul li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        #nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #nav ul li a:hover {
+            color: #ff6ec7;
+        }
+
+        /* Banner */
+        #banner {
+            background: url('{{ url_for('static', filename='shared_assets/shared_images/pic02.jpg') }}') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            text-align: center;
+            padding: 150px 0 100px 0;
+        }
+
+        #banner::after {
+            content: '';
+            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+        }
+
+        #banner .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        #banner h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #banner p {
+            font-size: 1.2em;
+        }
+
+        .goto-next {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #ff6ec7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .goto-next:hover {
+            background-color: #ff9ed1;
+        }
+
+        /* Seção de Upload */
+        .wrapper {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .wrapper h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .wrapper p {
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+
+        #upload-section input[type="file"],
+        #upload-section select {
+            display: block;
+            margin: 0 auto 20px auto;
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #upload-section .button {
+            padding: 10px 20px;
+            background-color: #ff6ec7;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #upload-section .button:hover {
+            background-color: #ff9ed1;
+        }
+
+        /* Gráfico */
+        #myChart {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Seção de Informações */
+        #info-section {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 60px 0;
+        }
+
+        #info-section .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #info-section .box {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
+            width: 28%;
+        }
+
+        #info-section .box h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        #info-section .box p {
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        #info-section .box .button {
+            padding: 10px 20px;
+            background-color: #ff6ec7;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        #info-section .box .button:hover {
+            background-color: #ff9ed1;
+        }
+
+        /* Seção de Newsletter */
+        #newsletter-section {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        #newsletter-section h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        #newsletter-section p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        #newsletter-section input[type="email"] {
+            width: 300px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        #newsletter-section input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #ff6ec7;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        #newsletter-section input[type="submit"]:hover {
+            background-color: #ff9ed1;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+        }
+
+        /* Rodapé */
+        #footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        #footer .ecmi-logo img {
+            max-height: 50px;
+            margin-top: 20px;
+        }
+
+        #footer .additional-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #dcdcdc;
+        }
+
+        #footer .copyright {
+            list-style: none;
+            margin: 10px 0 0 0;
+            padding: 0;
+        }
+
+        #footer .copyright li {
+            display: inline;
+            margin: 0 5px;
+            color: #dcdcdc;
+        }
+
+        /* Responsividade */
+        @media screen and (max-width: 768px) {
+            #logo {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="page-wrapper">
+        <header id="header">
+            <div id="logo">
+                <img src="{{ url_for('static', filename='shared_assets/shared_images/pic01.jpg') }}" alt="DataNow Logo">
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="#banner">Início</a></li>
+                    <li><a href="#upload-section">Gerar Gráfico</a></li>
+                    <li><a href="#info-section">Importância dos Dados</a></li>
+                    <li><a href="#newsletter-section">Newsletter</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Banner -->
+        <section id="banner">
+            <div class="content">
+                <header>
+                    <h2>Acesso a Análises de Dados ao Alcance de Todos</h2>
+                    <p>Transforme dados em insights visuais e decisões estratégicas de maneira simples e eficaz.</p>
+                </header>
+                <p class="tagline">"Visualizar dados é transformar informação em conhecimento."</p>
+            </div>
+            <a href="#upload-section" class="goto-next">Gerar Gráfico</a>
+        </section>
+
+        <!-- Seção de Upload -->
+        <section id="upload-section" class="wrapper">
+            <div class="container">
+                <header class="major">
+                    <h2>Gerador de Gráficos Interativo</h2>
+                    <p>Faça upload de um arquivo Excel ou CSV para visualizar seus dados instantaneamente.</p>
+                </header>
+                <form id="fileForm" enctype="multipart/form-data">
+                    <input type="file" id="fileInput" accept=".csv, .xls, .xlsx">
+                    <select id="chartType">
+                        <option value="bar">Gráfico de Barras</option>
+                        <option value="line">Gráfico de Linhas</option>
+                        <option value="pie">Gráfico de Pizza</option>
+                        <option value="radar">Gráfico de Radar</option>
+                    </select>
+                    <button type="button" class="button" onclick="generateChart()">Gerar Gráfico</button>
+                </form>
+                <canvas id="myChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Seção de Informações -->
+        <section id="info-section">
+            <div class="container">
+                <header class="major">
+                    <h2>A Importância dos Dados no Mundo Atual</h2>
+                    <p>Descubra como a análise de dados pode impulsionar decisões estratégicas e o desenvolvimento.</p>
+                </header>
+                <div class="row">
+                    <div class="box">
+                        <h3>Como Evitar Falácias de Dados</h3>
+                        <p>Aprenda sobre as falácias comuns em dados e como evitá-las em suas análises.</p>
+                        <a href="https://ibpad.com.br/ciencia-dados/15-falacias-estatisticas-que-voce-deve-evitar/" target="_blank" class="button">Saiba Mais</a>
+                    </div>
+                    <div class="box">
+                        <h3>Literacia de Dados</h3>
+                        <p>Entenda a importância de saber interpretar e utilizar dados no mundo moderno.</p>
+                        <a href="https://blog.somostera.com/lideranca-baseada-em-dados/data-literacy-importancia-da-alfabetizacao-de-dados" target="_blank" class="button">Saiba Mais</a>
+                    </div>
+                    <div class="box">
+                        <h3>Dados na Tomada de Decisões</h3>
+                        <p>Descubra como empresas e organizações usam dados para direcionar estratégias eficazes.</p>
+                        <a href="https://favu.io/como-usar-dados-para-elevar-o-nivel-do-seu-planejamento-estrategico/" target="_blank" class="button">Saiba Mais</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Newsletter -->
+        <section id="newsletter-section">
+            <div class="container">
+                <h2>Inscreva-se na Newsletter</h2>
+                <p>Receba as últimas atualizações e insights diretamente no seu email.</p>
+                <form method="POST" action="{{ url_for('subscribe') }}">
+                    <input type="email" name="email" placeholder="Digite seu email" required>
+                    <input type="submit" value="Inscrever-se">
+                </form>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer id="footer">
+            <div class="ecmi-logo">
+                <img src="{{ url_for('static', filename='shared_assets/shared_images/pic03.jpg') }}" alt="Comunicação Digital ECMI">
+            </div>
+            <div class="additional-text">
+                <p>Feito como parte da disciplina Métodos Digitais ministrada pela Profª Danielle Gonçalves.</p>
+            </div>
+            <ul class="copyright">
+                <li>&copy; DataNow. Todos os direitos reservados.</li>
+                <li>Design: HTML5 UP</li>
+            </ul>
+        </footer>
+    </div>
+
+    <!-- Scripts Inline -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script>
+        function generateChart() {
+            const fileInput = document.getElementById('fileInput');
+            const chartType = document.getElementById('chartType').value;
+
+            if (!fileInput.files || !fileInput.files[0]) {
+                alert('Por favor, selecione um arquivo Excel ou CSV.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const data = event.target.result;
+                let workbook;
+
+                if (file.name.endsWith('.csv')) {
+                    const csvData = data.trim().split('\n').map(row => row.split(','));
+                    const labels = csvData.slice(1).map(row => row[0]);
+                    const values = csvData.slice(1).map(row => parseFloat(row[1]));
+                    createChart(labels, values, chartType);
+                } else if (file.name.endsWith('.xls') || file.name.endsWith('.xlsx')) {
+                    const binary = new Uint8Array(data);
+                    workbook = XLSX.read(binary, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                    const labels = jsonData.slice(1).map(row => row[0]);
+                    const values = jsonData.slice(1).map(row => parseFloat(row[1]));
+                    createChart(labels, values, chartType);
+                } else {
+                    alert('Formato de arquivo não suportado.');
+                }
+            };
+
+            if (file.name.endsWith('.csv')) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
+        function createChart(labels, values, chartType) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+
+            if (window.myChart instanceof Chart) {
+                window.myChart.destroy();
+            }
+
+            const colors = [
+                '#3498db', '#e74c3c', '#2ecc71', '#9b59b6',
+                '#f1c40f', '#e67e22', '#1abc9c', '#34495e'
+            ];
+
+            window.myChart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Dados Carregados',
+                        data: values,
+                        backgroundColor: colors,
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: chartType === 'pie' || chartType === 'radar' ? {} : {
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
+

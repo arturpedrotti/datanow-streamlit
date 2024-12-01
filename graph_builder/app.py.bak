@@ -1,0 +1,65 @@
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_mail import Mail, Message
+import os
+from dotenv import load_dotenv
+
+# Carrega as variáveis de ambiente do arquivo .env
+load_dotenv()
+
+app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'sua_chave_secreta')
+
+# Configurações do Flask-Mail
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT'))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS') == 'True'
+app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL') == 'True'
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True') == 'True'
+app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'False') == 'True'
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+
+mail = Mail(app)
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template('index.html')
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    email = request.form.get('email')
+    if email:
+        try:
+            msg = Message('Bem-vindo à Newsletter do DataNow',
+                          sender=app.config['MAIL_USERNAME'],
+                          recipients=[email])
+
+            # Ler o conteúdo do arquivo de mensagem de boas-vindas
+            with open('welcome_message.html', 'r', encoding='utf-8') as file:
+                content = file.read()
+
+            # Anexar a imagem do logo
+            with app.open_resource('static/images/pic01.jpg') as logo:
+                msg.attach('pic01.jpg', 'image/jpeg', logo.read(), 'inline', headers=[['Content-ID', '<Logo>']])
+
+            # Substituir o src no conteúdo HTML
+            content = content.replace('cid:logo_image', 'cid:Logo')
+
+            msg.html = content
+
+            mail.send(msg)
+            flash('Email enviado com sucesso!', 'success')
+        except Exception as e:
+            print(f"Erro: {e}")
+            flash('Ocorreu um erro ao enviar o email. Tente novamente mais tarde.', 'danger')
+    else:
+        flash('Por favor, insira um email válido.', 'warning')
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
