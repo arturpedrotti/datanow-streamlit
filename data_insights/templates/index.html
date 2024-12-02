@@ -1,105 +1,305 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Alocação de Recursos - Painel</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="../shared_assets/css/main.css" />
+    <meta charset="utf-8">
+    <title>Painel de Alocação de Recursos Públicos</title>
+    <link rel="icon" href="{{ url_for('static', filename='shared_assets/shared_images/favicon.ico') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <!-- Inline Styles -->
     <style>
-        /* Additional styles for layout fixes */
-        #page-wrapper {
-            margin: 0 auto;
-            padding: 20px;
+        /* Estilos CSS */
+        body {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: #ffffff;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
         }
-        iframe {
-            margin-top: 20px;
-            width: 100%;
-            height: 800px;
+
+        /* Cabeçalho */
+        #header {
+            background: rgba(0, 0, 0, 0.7);
+            position: relative;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Logo */
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            height: 50px;
+        }
+
+        #logo img {
+            height: 100%;
+        }
+
+        /* Navegação */
+        #nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #nav ul li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        #nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #nav ul li a:hover {
+            color: #ff6ec7;
+        }
+
+        /* Banner */
+        #banner {
+            background: url('{{ url_for('static', filename='shared_assets/shared_images/header.jpg') }}') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            text-align: center;
+            padding: 150px 0 100px 0;
+        }
+
+        #banner::after {
+            content: '';
+            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+        }
+
+        #banner .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        #banner h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #banner p {
+            font-size: 1.2em;
+        }
+
+        .goto-next {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #ff6ec7;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .goto-next:hover {
+            background-color: #ff9ed1;
+        }
+
+        /* Seção de Visualizações */
+        .wrapper {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .wrapper h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .wrapper p {
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+
+        /* Gráfico */
+        #dash-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        /* Seção de Informações */
+        #info-section {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 60px 0;
+        }
+
+        #info-section .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #info-section .box {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
+            width: 28%;
+        }
+
+        #info-section .box h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        #info-section .box p {
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        #info-section .box .button {
+            padding: 10px 20px;
+            background-color: #ff6ec7;
+            color: #ffffff;
             border: none;
-            border-radius: 10px; /* Slightly rounded edges for better aesthetics */
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        #info-section .box .button:hover {
+            background-color: #ff9ed1;
+        }
+
+        /* Rodapé */
+        #footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        #footer .additional-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #dcdcdc;
+        }
+
+        #footer .copyright {
+            list-style: none;
+            margin: 10px 0 0 0;
+            padding: 0;
+        }
+
+        #footer .copyright li {
+            display: inline;
+            margin: 0 5px;
+            color: #dcdcdc;
+        }
+
+        /* Responsividade */
+        @media screen and (max-width: 768px) {
+            #logo {
+                position: static;
+                margin-bottom: 20px;
+            }
         }
     </style>
+
+    <!-- Dash CSS placeholder -->
+    {%css%}
 </head>
-<body class="homepage">
+<body>
     <div id="page-wrapper">
-
         <!-- Header -->
-        <div id="header">
-            <div class="inner">
-                <header>
-                    <h1>Alocação de Recursos Públicos</h1>
-                    <p>Uma análise detalhada para estratégias de redução da pobreza.</p>
-                </header>
-                <footer>
-                    <a href="#main-content" class="button circled scrolly">Explorar Dados</a>
-                </footer>
+        <header id="header">
+            <div id="logo">
+                <img src="{{ url_for('static', filename='shared_assets/shared_images/pic01.jpg') }}" alt="DataNow Logo">
             </div>
-
-            <!-- Nav -->
             <nav id="nav">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="left-sidebar.html">Left Sidebar</a></li>
-                    <li><a href="right-sidebar.html">Right Sidebar</a></li>
-                    <li><a href="no-sidebar.html">No Sidebar</a></li>
+                    <li><a href="#banner">Início</a></li>
+                    <li><a href="#visualization-section">Visualizações</a></li>
+                    <li><a href="#info-section">Informações</a></li>
                 </ul>
             </nav>
-        </div>
+        </header>
 
-        <!-- Main Content -->
-        <section id="main-content" style="margin-top: 50px;">
-            <iframe
-                src="http://127.0.0.1:8050/"
-                style="width: 100%; height: 800px; border: none;">
-            </iframe>
+        <!-- Banner -->
+        <section id="banner">
+            <div class="content">
+                <header>
+                    <h2>Painel de Alocação de Recursos Públicos</h2>
+                    <p>Analise dados socioeconômicos de forma interativa e intuitiva.</p>
+                </header>
+                <p class="tagline">"Visualizar dados é transformar informação em conhecimento."</p>
+            </div>
+            <a href="#visualization-section" class="goto-next">Explorar Visualizações</a>
         </section>
 
-        <!-- Footer -->
-        <div id="footer">
+        <!-- Seção de Visualizações -->
+        <section id="visualization-section" class="wrapper">
             <div class="container">
-                <div class="row">
-                    <!-- Contact -->
-                    <section class="col-6 col-12-mobile">
-                        <header>
-                            <h3>Sobre o Projeto</h3>
-                        </header>
-                        <p>
-                            Este projeto tem como objetivo analisar a alocação de recursos públicos para estratégias de redução da pobreza,
-                            utilizando dados da Pesquisa Nacional por Amostra de Domicílios (PNAD).
-                        </p>
-                    </section>
-
-                    <!-- About -->
-                    <section class="col-6 col-12-mobile">
-                        <header>
-                            <h3>Créditos</h3>
-                        </header>
-                        <p>
-                            Dados adaptados de: <a href="https://ww2.ibge.gov.br/home/estatistica/populacao/trabalhoerendimento/pnad2015/microdados.shtm" target="_blank">PNAD/IBGE</a>.
-                        </p>
-                        <p>Adaptação por: Murilão (Kaggle).</p>
-                        <p>Autor do projeto: Artur Pedrotti Grochau.</p>
-                    </section>
+                <header class="major">
+                    <h2>Visualizações Interativas</h2>
+                    <p>Interaja com os gráficos para obter insights detalhados sobre renda, educação e muito mais.</p>
+                </header>
+                <!-- Dash App Content -->
+                <div id="dash-content">
+                    {%app_entry%}
                 </div>
-                <hr />
+            </div>
+        </section>
+
+        <!-- Seção de Informações -->
+        <section id="info-section">
+            <div class="container">
+                <header class="major">
+                    <h2>A Importância dos Dados Socioeconômicos</h2>
+                    <p>Compreenda como os dados influenciam decisões e políticas públicas.</p>
+                </header>
                 <div class="row">
-                    <div class="col-12">
-                        <p>&copy; Artur Pedrotti Grochau. Template por HTML5 UP.</p>
+                    <div class="box">
+                        <h3>Desigualdade de Renda</h3>
+                        <p>Entenda os fatores que contribuem para a desigualdade de renda no Brasil.</p>
+                        <a href="https://www.ipea.gov.br/portal/" target="_blank" class="button">Saiba Mais</a>
+                    </div>
+                    <div class="box">
+                        <h3>Educação e Oportunidades</h3>
+                        <p>Explore como a educação impacta a renda e as oportunidades de emprego.</p>
+                        <a href="https://www.ibge.gov.br/" target="_blank" class="button">Saiba Mais</a>
+                    </div>
+                    <div class="box">
+                        <h3>Políticas Públicas</h3>
+                        <p>Descubra como os dados orientam a criação de políticas mais eficazes.</p>
+                        <a href="https://www.gov.br/pt-br/noticias/educacao-e-pesquisa" target="_blank" class="button">Saiba Mais</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
+        <!-- Rodapé -->
+        <footer id="footer">
+            <div class="additional-text">
+                <p>Desenvolvido como parte da disciplina Métodos Digitais.</p>
+            </div>
+            <ul class="copyright">
+                <li>&copy; DataNow. Todos os direitos reservados.</li>
+                <li>Design: HTML5 UP</li>
+            </ul>
+        </footer>
     </div>
 
-    <!-- Scripts -->
-    <script src="../shared_assets/js/jquery.min.js"></script>
-    <script src="../shared_assets/js/jquery.dropotron.min.js"></script>
-    <script src="../shared_assets/js/jquery.scrolly.min.js"></script>
-    <script src="../shared_assets/js/jquery.scrollex.min.js"></script>
-    <script src="../shared_assets/js/browser.min.js"></script>
-    <script src="../shared_assets/js/breakpoints.min.js"></script>
-    <script src="../shared_assets/js/util.js"></script>
-    <script src="../shared_assets/js/main.js"></script>
+    <!-- Dash Scripts -->
+    {%config%}
+    {%scripts%}
+    {%renderer%}
 </body>
 </html>

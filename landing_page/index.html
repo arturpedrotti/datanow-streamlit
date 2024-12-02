@@ -1,34 +1,248 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Datanow</title>
+    <meta charset="utf-8">
+    <title>DataNow - Visualização e Análise de Dados Simplificadas</title>
+    <link rel="icon" href="static/shared_assets/shared_images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- CSS Externo -->
+    <link rel="stylesheet" href="static/shared_assets/assets_data_insights/css/main.css" />
+    <link rel="stylesheet" href="static/shared_assets/assets_data_insights/css/noscript.css" />
+
+    <!-- Estilos Inline -->
     <style>
+        /* Estilos Gerais */
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background-color: #f4f4f4;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: #ffffff;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
         }
-        a {
+
+        /* Cabeçalho */
+        #header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Logo */
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            height: 50px;
+        }
+
+        #logo img {
+            height: 100%;
+        }
+
+        /* Navegação */
+        #nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #nav ul li {
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        #nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        #nav ul li a:hover {
+            color: #ff6ec7;
+        }
+
+        /* Banner */
+        #banner {
+            background: url('static/shared_assets/shared_images/header.jpg') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            text-align: center;
+            padding: 150px 0 100px 0;
+        }
+
+        #banner::after {
+            content: '';
+            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+        }
+
+        #banner .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        #banner h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        #banner p {
+            font-size: 1.2em;
+        }
+
+        /* Botões */
+        .button {
             display: inline-block;
             margin: 15px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
+            padding: 15px 30px;
+            background-color: #ff6ec7;
+            color: #ffffff;
             text-decoration: none;
             border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 1.1em;
         }
-        a:hover {
-            background-color: #0056b3;
+
+        .button:hover {
+            background-color: #ff9ed1;
+        }
+
+        /* Seção Sobre */
+        #about {
+            padding: 60px 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #about h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #about p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            line-height: 1.6;
+        }
+
+        /* Lista de Funcionalidades */
+        #about ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: left;
+        }
+
+        #about ul li {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Rodapé */
+        #footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        #footer .additional-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #dcdcdc;
+        }
+
+        #footer .copyright {
+            list-style: none;
+            margin: 10px 0 0 0;
+            padding: 0;
+        }
+
+        #footer .copyright li {
+            display: inline;
+            margin: 0 5px;
+            color: #dcdcdc;
+        }
+
+        /* Responsividade */
+        @media screen and (max-width: 768px) {
+            #logo {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            #banner h1 {
+                font-size: 2em;
+            }
+
+            .button {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to Datanow</h1>
-    <p>Select a project:</p>
-    <a href="/data_insights/">Data Insights</a>
-    <a href="/graph_builder/">Graph Builder</a>
+    <div id="page-wrapper">
+        <!-- Cabeçalho -->
+        <header id="header">
+            <div id="logo">
+                <img src="static/shared_assets/shared_images/pic01.jpg" alt="DataNow Logo">
+            </div>
+            <nav id="nav">
+                <ul>
+                    <li><a href="#banner">Início</a></li>
+                    <li><a href="#about">Sobre</a></li>
+                    <li><a href="#footer">Contato</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Banner -->
+        <section id="banner">
+            <div class="content">
+                <h1>Bem-vindo ao DataNow</h1>
+                <p>Visualização e Análise de Dados Simplificadas</p>
+                <div>
+                    <a href="/data_insights/" class="button">Data Insights</a>
+                    <a href="/graph_builder/" class="button">Graph Builder</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Sobre -->
+        <section id="about">
+            <h2>Sobre o Projeto</h2>
+            <p><strong>DataNow</strong> é uma aplicação web inovadora que une visualizações de dados interativas e insights profundos para explorar métricas relacionadas ao combate à pobreza. O objetivo principal é permitir que pessoas de diferentes níveis de conhecimento possam compreender e interagir com dados complexos de forma intuitiva e prática.</p>
+            <p>Originalmente inspirado no template <em>Landed</em> por HTML5 UP, o projeto passou por uma reformulação completa para atender às necessidades específicas de usabilidade e design. Embora o template tenha servido como ponto de partida, a estrutura e a funcionalidade foram redesenhadas para criar uma experiência simplificada e voltada ao usuário final.</p>
+            <p>DataNow está atualmente em desenvolvimento e evolui continuamente, integrando novas funcionalidades e melhorias para oferecer mais valor aos usuários. Este projeto começou como parte das disciplinas <strong>Métodos Digitais</strong>, ministrada pela professora <strong>Danielle Sanches de Almeida Gonçalves</strong>, e <strong>Business Intelligence</strong>, sob a orientação do professor <strong>Josir Cardoso Gomes</strong>.</p>
+            <h3>✨ Funcionalidades Principais</h3>
+            <ul>
+                <li>📊 <strong>Gerador de gráficos interativos</strong>: Criação de gráficos customizados em tempo real, com base em métricas selecionadas.</li>
+                <li>📈 <strong>Dashboards dinâmicos</strong>: Exploração de dados sobre pobreza, desigualdade e outras métricas socioeconômicas.</li>
+                <li>🌟 <strong>Interface otimizada e moderna</strong>: Com base no design minimalista, mas totalmente customizado para este projeto.</li>
+                <li>🔄 <strong>Navegação intuitiva</strong>: Conexões entre telas e visualizações para facilitar o uso e aprendizado.</li>
+                <li>🚀 <strong>Em constante evolução</strong>: Novas funcionalidades e melhorias sendo adicionadas regularmente.</li>
+            </ul>
+        </section>
+
+        <!-- Rodapé -->
+        <footer id="footer">
+            <div class="additional-text">
+                <p>Desenvolvido por Artur Pedrotti.</p>
+                <p>Contato: <a href="mailto:arturpedrotti@datanow.info">arturpedrotti@datanow.info</a></p>
+                <p>GitHub: <a href="https://github.com/arturpedrotti" target="_blank">Artur Pedrotti</a></p>
+            </div>
+            <ul class="copyright">
+                <li>&copy; DataNow. Todos os direitos reservados.</li>
+                <li>Design original: <a href="https://html5up.net/landed" target="_blank">Landed</a> por HTML5 UP</li>
+            </ul>
+        </footer>
+    </div>
 </body>
 </html>
