@@ -1,8 +1,31 @@
+import os
 from dash import Dash, dcc, html, Input, Output
 import plotly.express as px
 import pandas as pd
+from flask import Flask
 
-# Load the data
+# Initialize Flask server and set static folder
+server = Flask(__name__, static_folder='../static')
+
+# Initialize Dash app
+app = Dash(
+    __name__,
+    server=server,
+    suppress_callback_exceptions=True,
+    external_stylesheets=[
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    ],
+    external_scripts=[
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    ],
+    meta_tags=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1'}],
+)
+
+# Read index.html from templates folder
+with open('templates/index.html', 'r', encoding='utf-8') as f:
+    app.index_string = f.read()
+
+# Load data
 file_path = "dados.csv"
 data = pd.read_csv(file_path)
 
@@ -31,104 +54,102 @@ def remove_outliers(df, column):
 # Clean data
 data = remove_outliers(data, 'Renda')
 
-# Initialize Dash app
-app = Dash(
-    __name__,
-    suppress_callback_exceptions=True,
-    external_stylesheets=[
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    ],
-    external_scripts=[
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    ],
-    meta_tags=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1'}],
-)
+# Limit data to Anos de Estudo <= 16
+data = data[data['Anos de Estudo'] <= 16]
 
-# Set the server for deployment
-server = app.server
-
-# Custom index string to use the modified index.html
-with open('templates/index.html', 'r', encoding='utf-8') as f:
-    app.index_string = f.read()
-
-# Define layout
+# Define the app layout
 app.layout = html.Div([
     # Dropdown for state selection
-    html.Label("Selecione o Estado (UF):", style={'fontSize': '18px', 'color': '#ffffff'}),
-    dcc.Dropdown(
-        id='state-dropdown',
-        options=[{'label': nome, 'value': uf} for uf, nome in uf_map.items()],
-        placeholder="Todos os Estados",
-        style={
-            'backgroundColor': '#ffffff', 'color': '#000000',
-            'border': '1px solid #004d99', 'borderRadius': '5px',
-            'width': '60%', 'margin': 'auto', 'padding': '5px'
-        },
-        clearable=True
-    ),
+    html.Div([
+        html.Label("Selecione o Estado (UF):", style={'fontSize': '18px', 'color': '#ffffff'}),
+        dcc.Dropdown(
+            id='state-dropdown',
+            options=[{'label': nome, 'value': uf} for uf, nome in uf_map.items()],
+            placeholder="Selecione um Estado",
+            style={
+                'backgroundColor': '#ffffff', 'color': '#000000',
+                'border': '1px solid #004d99', 'borderRadius': '5px',
+                'width': '60%', 'margin': 'auto', 'padding': '5px'
+            },
+            clearable=True
+        ),
+    ], style={'textAlign': 'center', 'marginTop': '20px'}),
     html.Br(),
 
-    # Graph 1: Income vs Education
-    html.Div(id='graph1-container', children=[
-        html.H2("Relação: Anos de Estudo e Renda Média", style={'textAlign': 'center'}),
-        dcc.Graph(id='income-education-graph')
-    ]),
-    html.Hr(),
-
-    # Graph 2: Income by Age Group
-    html.Div(id='graph2-container', children=[
-        html.H2("Distribuição de Renda Média por Faixa Etária", style={'textAlign': 'center'}),
-        dcc.Graph(id='age-income-graph')
-    ]),
-    html.Hr(),
-
-    # Graph 3: Income by Gender
-    html.Div(id='graph3-container', children=[
-        html.H2("Renda Média por Gênero", style={'textAlign': 'center'}),
-        dcc.Graph(id='income-gender-graph')
-    ]),
-    html.Hr(),
+    # Container for the graphs (initially empty)
+    html.Div(id='graphs-container'),
 ])
 
-# Callbacks for updating graphs
+# Callback to update the graphs
 @app.callback(
-    [Output('income-education-graph', 'figure'),
-     Output('age-income-graph', 'figure'),
-     Output('income-gender-graph', 'figure')],
+    Output('graphs-container', 'children'),
     [Input('state-dropdown', 'value')]
 )
 def update_graphs(selected_state):
-    filtered_data = data if not selected_state else data[data['UF'] == selected_state]
+    if not selected_state:
+        # Do not display graphs if no state is selected
+        return []
+    else:
+        # Filter data based on the selected state
+        filtered_data = data[data['UF'] == selected_state]
 
-    # Graph 1: Income vs Education
-    education_data = filtered_data.groupby('Anos de Estudo')['Renda'].mean().reset_index()
-    fig1 = px.line(
-        education_data, x='Anos de Estudo', y='Renda',
-        title='Renda Média vs Anos de Estudo',
-        markers=True, template='plotly_dark'
-    )
+        # Check if the DataFrame is not empty
+        if filtered_data.empty:
+            return [html.Div("Nenhum dado disponível para o estado selecionado.", style={'color': 'white', 'textAlign': 'center'})]
 
-    # Graph 2: Income by Age Group
-    age_data = filtered_data.groupby('Idade')['Renda'].mean().reset_index()
-    fig2 = px.bar(
-        age_data, x='Idade', y='Renda',
-        title='Renda Média por Idade', template='plotly_dark'
-    )
+        # Graph 1: Renda Média vs Anos de Estudo
+        education_data = filtered_data.groupby('Anos de Estudo')['Renda'].mean().reset_index()
+        fig1 = px.line(
+            education_data, x='Anos de Estudo', y='Renda',
+            title='Renda Média vs Anos de Estudo',
+            markers=True, template='plotly_dark'
+        )
 
-    # Graph 3: Income by Gender
-    gender_data = filtered_data.groupby('Sexo')['Renda'].mean().reset_index()
-    fig3 = px.pie(
-        gender_data, names='Sexo', values='Renda',
-        title='Distribuição de Renda por Gênero', hole=0.4
-    )
+        # Adjust x-axis to show all years
+        fig1.update_xaxes(dtick=1)
 
-    # Adjust figure styles
-    fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color='white')
-    fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color='white')
-    fig3.update_layout(paper_bgcolor='rgba(0,0,0,0)', font_color='white')
+        # Graph 2: Renda Média por Faixa Etária
+        bins = [0, 18, 25, 35, 45, 60, 100]
+        labels = ['0-18', '19-25', '26-35', '36-45', '46-60', '60+']
+        filtered_data = filtered_data.copy()  # Avoid SettingWithCopyWarning
+        filtered_data['Faixa Etária'] = pd.cut(filtered_data['Idade'], bins=bins, labels=labels, include_lowest=True)
+        age_data = filtered_data.groupby('Faixa Etária')['Renda'].mean().reset_index()
+        fig2 = px.bar(
+            age_data, x='Faixa Etária', y='Renda',
+            title='Renda Média por Faixa Etária', template='plotly_dark'
+        )
 
-    return fig1, fig2, fig3
+        # Graph 3: Renda Média por Gênero
+        gender_data = filtered_data.groupby('Sexo')['Renda'].mean().reset_index()
+        fig3 = px.bar(
+            gender_data, x='Sexo', y='Renda', color='Sexo',
+            title='Renda Média por Gênero', template='plotly_dark'
+        )
+
+        # Adjust figure styles
+        fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color='white')
+        fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color='white')
+        fig3.update_layout(paper_bgcolor='rgba(0,0,0,0)', font_color='white', showlegend=False)
+
+        # Return the graphs
+        return [
+            html.Div([
+                html.H2("Relação: Anos de Estudo e Renda Média", style={'textAlign': 'center'}),
+                dcc.Graph(figure=fig1)
+            ]),
+            html.Hr(),
+            html.Div([
+                html.H2("Distribuição de Renda Média por Faixa Etária", style={'textAlign': 'center'}),
+                dcc.Graph(figure=fig2)
+            ]),
+            html.Hr(),
+            html.Div([
+                html.H2("Renda Média por Gênero", style={'textAlign': 'center'}),
+                dcc.Graph(figure=fig3)
+            ]),
+            html.Hr(),
+        ]
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, dev_tools_ui=False)
