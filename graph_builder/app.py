@@ -89,5 +89,5 @@ def test_static():
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True, port=8060)
+    app.run(host="0.0.0.0", port=8060, debug=True)
 
