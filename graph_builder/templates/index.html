@@ -1,36 +1,36 @@
-<!DOCTYPE HTML>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>DataNow - Visualização e Análise de Dados Simplificadas</title>
-    <link rel="icon" href="{{ url_for('static', filename='shared_assets/shared_images/favicon.ico') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!-- Estilos Inline -->
-    <style>
-        /* Estilos CSS */
-        body {
-            background: linear-gradient(to right, #1e3c72, #2a5298);
-            color: #ffffff;
-            font-family: 'Open Sans', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
+	<!DOCTYPE HTML>
+	<html lang="pt-BR">
+	<head>
+	    <meta charset="utf-8">
+	    <title>DataNow - Visualização e Análise de Dados Simplificadas</title>
+	    <link rel="icon" href="{{ url_for('static', filename='shared_assets/shared_images/favicon.ico') }}">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	    <!-- Estilos Inline -->
+	    <style>
+		/* Estilos CSS */
+		body {
+		    background: linear-gradient(to right, #1e3c72, #2a5298);
+		    color: #ffffff;
+		    font-family: 'Open Sans', sans-serif;
+		    margin: 0;
+		    padding: 0;
+		}
 
-        /* Cabeçalho */
-        #header {
-            background: rgba(0, 0, 0, 0.7);
-            position: relative;
-            padding: 20px;
-            text-align: center;
-        }
+		/* Cabeçalho */
+		#header {
+		    background: rgba(0, 0, 0, 0.7);
+		    position: relative;
+		    padding: 20px;
+		    text-align: center;
+		}
 
-        /* Logo */
-        #logo {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            height: 50px;
-        }
+		/* Logo */
+		#logo {
+		    position: absolute;
+		    top: 10px;
+		    right: 20px;
+		    height: 50px;
+		}
 
         #logo img {
             height: 100%;
@@ -318,7 +318,7 @@
             </div>
             <nav id="nav">
                 <ul>
-                    <li><a href="#banner">Início</a></li>
+                    <li><a href="http://127.0.0.1:8501">Início</a></li>
                     <li><a href="#upload-section">Gerar Gráfico</a></li>
                     <li><a href="#info-section">Importância dos Dados</a></li>
                     <li><a href="#newsletter-section">Newsletter</a></li>
@@ -335,7 +335,6 @@
                 </header>
                 <p class="tagline">"Visualizar dados é transformar informação em conhecimento."</p>
             </div>
-            <a href="#upload-section" class="goto-next">Gerar Gráfico</a>
         </section>
 
         <!-- Seção de Upload -->
@@ -413,11 +412,9 @@
                 <img src="{{ url_for('static', filename='shared_assets/shared_images/pic03.jpg') }}" alt="Comunicação Digital ECMI">
             </div>
             <div class="additional-text">
-                <p>Feito como parte da disciplina Métodos Digitais ministrada pela Profª Danielle Gonçalves.</p>
             </div>
             <ul class="copyright">
                 <li>&copy; DataNow. Todos os direitos reservados.</li>
-                <li>Design: HTML5 UP</li>
             </ul>
         </footer>
     </div>
