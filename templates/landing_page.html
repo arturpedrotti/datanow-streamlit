@@ -12,6 +12,21 @@
 
     <!-- Estilos Inline -->
     <style>
+		/* Títulos principais */
+	#banner h1, #about h2, #about h3 {
+	    color: #ff69b4; /* Cor rosa neon */
+	    text-shadow: 0 0 8px #ff69b4; /* Brilho leve */
+	}
+
+	/* Textos fortes */
+	#about strong {
+	    color: yellow; /* Cor amarela para destaques */
+	}
+
+	/* Texto branco após os dois-pontos */
+	#about ul li span {
+	    color: #ffffff;
+	}
         /* Estilos Gerais */
         body {
             background: linear-gradient(to right, #1e3c72, #2a5298);
@@ -207,7 +222,7 @@
         <section id="banner">
             <div class="content">
                 <h1>Bem-vindo ao DataNow</h1>
-                <p>Visualização e Análise de Dados Simplificadas</p>
+		<p style="text-align: center;">Visualização e Análise de Dados Simplificadas</p>
                 <div>
                     <a href="/data_insights/" class="button">Data Insights</a>
                     <a href="/graph_builder/" class="button">Graph Builder</a>
@@ -236,8 +251,14 @@
             <div class="additional-text">
                 <p>Desenvolvido por Artur Pedrotti.</p>
                 <p>Contato: <a href="mailto:arturpedrotti@datanow.info">arturpedrotti@datanow.info</a></p>
-                <p>GitHub: <a href="https://github.com/arturpedrotti" target="_blank">Artur Pedrotti</a></p>
             </div>
+	<div class="github-link" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+	    <img src="static/shared_assets/shared_images/github-icon.png" alt="GitHub Icon" style="height: 20px; margin-right: 5px;">
+
+    <a href="https://github.com/arturpedrotti/datanow" target="_blank" style="color: #ff6ec7; text-decoration: none; font-weight: bold;">GitHub: DataNow</a>
+</div>	
+	   <div class="github-link" style="display: flex; align-items: center; justify-content: center; margin-top: 10px;">
+</div> 
             <ul class="copyright">
                 <li>&copy; DataNow. Todos os direitos reservados.</li>
                 <li>Design original: <a href="https://html5up.net/landed" target="_blank">Landed</a> por HTML5 UP</li>
